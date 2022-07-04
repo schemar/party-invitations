@@ -41,18 +41,22 @@ export class GreatCircleDistance implements GreatCircleDistanceInterface {
     positionTwo: Position;
   }): Distance {
     // Convert degrees to radiance:
-    const [latitudeOne, longitudeOne, latitudeTwo, longitudeTwo] = [positionOne.latitude, positionOne.longitude, positionTwo.latitude, positionTwo.longitude].map(degrees => degrees * (Math.PI / 180));
+    const [latitudeOne, longitudeOne, latitudeTwo, longitudeTwo] = [
+      positionOne.latitude,
+      positionOne.longitude,
+      positionTwo.latitude,
+      positionTwo.longitude,
+    ].map((degrees) => degrees * (Math.PI / 180));
 
     // Computation of distance based on "Great-circle distance".
     // For more details see "https://en.wikipedia.org/wiki/Great-circle_distance".
     // If more accuracy is required, consider using the special case of the
     // Vincenty formula, as described in the Wikipedia article.
     let h =
-        Math.pow(
-          Math.sin((latitudeTwo - latitudeOne) / 2),
-          2
-        ) +
-          (Math.cos(latitudeOne) * Math.cos(latitudeTwo) * Math.pow(Math.sin((longitudeTwo - longitudeOne)/2), 2))
+      Math.pow(Math.sin((latitudeTwo - latitudeOne) / 2), 2) +
+      Math.cos(latitudeOne) *
+        Math.cos(latitudeTwo) *
+        Math.pow(Math.sin((longitudeTwo - longitudeOne) / 2), 2);
 
     // As per the Wikipedia article, make sure that rounding errors do not lead
     // to an `h` greater than one.
