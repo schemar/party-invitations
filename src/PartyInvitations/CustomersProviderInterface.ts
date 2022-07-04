@@ -1,9 +1,9 @@
 import { Customer } from './Customer.js';
 
-export interface CustomersFileInterface {
+export interface CustomersProviderInterface {
   readCustomersOrThrow: ({
-    filePath,
+    fileIdentifier,
   }: {
-    filePath: string;
+    fileIdentifier: string;
   }) => Promise<{ customers: Customer[]; warnings: string[] }>;
 }

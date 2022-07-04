@@ -1,5 +1,6 @@
 import { Customer } from './PartyInvitations/Customer.js';
-import { CrmExportFile } from './PartyInvitations/CustomersFile/CrmExportFile.js';
+import { CrmExportProvider } from './PartyInvitations/CustomersProviders/CrmExportProvider.js';
+import { FileProvider } from './PartyInvitations/CustomersProviders/FileProvider.js';
 import { Distance } from './PartyInvitations/Distance.js';
 import { GreatCircleDistance } from './PartyInvitations/GreatCircleDistance/GreatCircleDistance.js';
 import { PartyInvitations } from './PartyInvitations/PartyInvitations.js';
@@ -115,10 +116,13 @@ const main = async () => {
   });
 
   const greatCircleDistance = GreatCircleDistance.newEarth();
-  const customersFile = new CrmExportFile();
+  const fileProvider = new FileProvider();
+  const customersProvider = new CrmExportProvider({
+    contentProvider: fileProvider,
+  });
   const partyInvitations = new PartyInvitations({
     greatCircleDistance,
-    customersFile,
+    customersProvider,
   });
 
   await printCustomerIdsAndWarningsToStdOut({

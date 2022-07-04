@@ -1,22 +1,23 @@
 import { Customer } from './Customer.js';
-import { CustomersFileInterface } from './CustomersFileInterface.js';
+import { CustomersProviderInterface } from './CustomersProviderInterface.js';
 import { Distance } from './Distance.js';
 import { GreatCircleDistanceInterface } from './GreatCircleDistanceInterface.js';
 import { Position } from './Position.js';
 
+// TODO: Documentation
 export class PartyInvitations {
   private readonly greatCircleDistance: GreatCircleDistanceInterface;
-  private readonly customersFile: CustomersFileInterface;
+  private readonly customersProvider: CustomersProviderInterface;
 
   constructor({
     greatCircleDistance,
-    customersFile,
+    customersProvider,
   }: {
     greatCircleDistance: GreatCircleDistanceInterface;
-    customersFile: CustomersFileInterface;
+    customersProvider: CustomersProviderInterface;
   }) {
     this.greatCircleDistance = greatCircleDistance;
-    this.customersFile = customersFile;
+    this.customersProvider = customersProvider;
   }
 
   // TODO: Test and implement invitedCustomers();
@@ -32,8 +33,8 @@ export class PartyInvitations {
     let customers: Customer[];
     let warnings: string[];
     try {
-      const readResults = await this.customersFile.readCustomersOrThrow({
-        filePath: customersFilePath,
+      const readResults = await this.customersProvider.readCustomersOrThrow({
+        fileIdentifier: customersFilePath,
       });
       customers = readResults.customers;
       warnings = readResults.warnings;

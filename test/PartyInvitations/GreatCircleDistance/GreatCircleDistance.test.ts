@@ -1,4 +1,4 @@
-import { GreatCircleDistance } from '../../../src/PartyInvitations/GreatCircleDistance/GreatCircleDistance';
+import { GreatCircleDistance } from '../../../src/PartyInvitations/GreatCircleDistance/GreatCircleDistance.js';
 
 describe('GreatCircleDistance', () => {
   // Adding the city names for more verbose test output.

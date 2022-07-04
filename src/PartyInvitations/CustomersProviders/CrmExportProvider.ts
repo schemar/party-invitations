@@ -1,31 +1,72 @@
-import fs from 'fs/promises';
 import { EOL } from 'os';
 import { Customer } from '../Customer.js';
-import { CustomersFileInterface } from '../CustomersFileInterface.js';
+import { CustomersProviderInterface } from '../CustomersProviderInterface.js';
+import { FileProvider } from './FileProvider.js';
 
-// TODO: Rename. Not a CSV file in the classical sense.
-export class CrmExportFile implements CustomersFileInterface {
+/**
+ * CrmExportProvider extracts customers from data in a CRM export.
+ *
+ * The expected format of a CRM export is as follows:
+ * 1. One customer per line.
+ * 2. Each line contains comma-separated key-value pairs.
+ * 3. Key and value are separated by a colon.
+ * 4. Spaces between separators are optoinal.
+ * 5. Valid keys are: id, lat, long
+ *    - id: The id of the customer. Must be in the correct format.
+ *    - lat: The latitude of the location of the customer.
+ *    - long: The langitude of the location of the customer.
+ * 6. Latitude and longitude must be decimal values.
+ *
+ * Examples:
+ * id: 12345678-1234-1234-1234-12345678, long: 13.1, lat: 52.2
+ * id: 00000000-0000-0000-0000-00000000, lat: 53.3, long: 13.3
+ */
+export class CrmExportProvider implements CustomersProviderInterface {
+  /** All customer IDs from the CRM export must match this regular expression. */
   private readonly CUSTOMER_ID_REGEX =
     /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{8}/;
-  // TODO: Implement and test readCustomers.
+
+  // The current implementation is only a file provider. However, this
+  // abstraction makes it easy in the future to expand the concept to other
+  // providers, for example from a database or a web API.
+  private readonly contentProvider: FileProvider;
+
+  /**
+   * Uses the content provider to get the CRM export.
+   */
+  public constructor({ contentProvider }: { contentProvider: FileProvider }) {
+    this.contentProvider = contentProvider;
+  }
+
+  /**
+   * Returns the customers and warnings from reading data from the given fileIdentifier.
+   *
+   * Adds warnings for malformed data that comes from the provider.
+   * Returns customers despite warnings, as long as they are complete.
+   */
   public async readCustomersOrThrow({
-    filePath,
+    fileIdentifier,
   }: {
-    filePath: string;
+    fileIdentifier: string;
   }): Promise<{ customers: Customer[]; warnings: string[] }> {
     let fileContent: string;
     try {
-      fileContent = await fs.readFile(filePath, { encoding: 'utf8' });
+      fileContent = await this.contentProvider.getContent({ fileIdentifier });
     } catch (error) {
-      throw new Error(`Cannot read file at '${filePath}'. ${error.toString()}`);
+      throw new Error(
+        `Cannot read file at '${fileIdentifier}'. ${error.toString()}`,
+      );
     }
 
     const fileLines = fileContent.split(EOL);
 
-    return this.extractCustomer(fileLines);
+    return this.extractCustomers(fileLines);
   }
 
-  private extractCustomer(fileLines: string[]): {
+  /**
+   * Extracts the customers from the given lines, one customer per line.
+   */
+  private extractCustomers(fileLines: string[]): {
     customers: Customer[];
     warnings: string[];
   } {

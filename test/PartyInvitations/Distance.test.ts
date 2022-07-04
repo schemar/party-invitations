@@ -1,4 +1,4 @@
-import { Distance } from '../../src/PartyInvitations/Distance';
+import { Distance } from '../../src/PartyInvitations/Distance.js';
 
 // Expand these unit tests with unit conversion if distance supports more units
 // than kilometers.
