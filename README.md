@@ -10,6 +10,37 @@ npm run build
 ./party_invitations
 ```
 
+Sample output:
+
+```
+The following warnings were encountered while processing the data:
+Invalid customer id: 'e6ee6861'
+Incomplete customer won't be considered: {"position":{"latitude":55.08068312,"longitude":12.86196247}}
+Given longitude is not a number: 'x.26537009'
+Incomplete customer won't be considered: {"position":{"latitude":50.41642815},"id":"e187aea0-95a6-41a7-b75c-3956a48c558d"}
+
+Customer IDs within 100 km of 52.493256 lat, 13.446082 lon (in alphabetical order):
+02335e27-e152-4771-9a6b-5b88c3b29eb9
+05d07502-b345-4133-b6b0-668ca44a5e95
+129b3b89-1b29-4aaa-a30c-b7e1a1dd46a0
+1a3b6dca-a1c9-4b9b-b280-007a040cc4da
+27051d0b-6476-4794-bb5d-27e7db8e29d5
+2cce11c3-6979-42a5-b501-ace4d5e598ec
+4013ac11-6d4a-41c5-94e4-abc4bb931e80
+469dc15d-6726-4e7d-8da4-d2e10e5a7669
+517ea41d-be50-4c2c-ba49-59a4de03842b
+6536a868-b83e-47b0-9462-7448a93b9827
+839e0ebc-4bce-4d2d-93d8-a1201b31c496
+841d0654-9971-4c84-a5a5-d3e5b5dbc77e
+add9c5a5-65d6-49a1-a260-c984905a9745
+b86d6784-7b41-4e3c-971a-5ca2ce8ee895
+bbccc9e8-5cee-439a-a00c-0088b88bc327
+cab0ebd3-149b-4bd7-9862-e3e11a9273d5
+ceaa3ede-1805-4c41-a2d1-79b1c74c033b
+d3b64719-3b9a-40b7-81e6-56dd94a5a794
+d5c05bd3-76d4-4c3c-9985-deb82751c611
+```
+
 Example data is located in the `./data` directory.
 
 I finished the exercise in less than 6 hours. I didn't have time to work on it
