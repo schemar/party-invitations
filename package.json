@@ -1,0 +1,43 @@
+{
+  "name": "party-invitations",
+  "version": "1.0.0",
+  "author": "Martin Schenck <martinschenck@fastmail.com>",
+  "license": "No License",
+  "description": "Command line application to get customer IDs within a given distance.",
+  "main": "build/src/main.js",
+  "type": "module",
+  "engines": {
+    "node": ">= 16.13 <17"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schemar/party-invitations.git"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:release": "tsc -p tsconfig.release.json",
+    "build:watch": "tsc -w -p tsconfig.json",
+    "lint": "eslint . --ext .ts --ext .mts",
+    "prebuild": "npm run lint && npm run test",
+    "prettier": "prettier --config .prettierrc --write .",
+    "start": "node build/src/main.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "tslib": "~2.4.0"
+  },
+  "devDependencies": {
+    "@types/jest": "~28.1.4",
+    "@types/node": "~18.0.1",
+    "@typescript-eslint/eslint-plugin": "~5.30.4",
+    "@typescript-eslint/parser": "~5.30.4",
+    "eslint": "~8.19.0",
+    "eslint-config-prettier": "~8.5.0",
+    "eslint-plugin-jest": "~26.5.3",
+    "jest": "~28.1.2",
+    "prettier": "~2.7.1",
+    "ts-jest": "~28.0.5",
+    "typescript": "~4.7.4"
+  }
+}

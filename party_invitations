@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -exuo pipefail
+
+# This file is a helper script to run the code with the given parameters and
+# file.
+# The application is configured using environment variables following 12 factor
+# https://12factor.net/
+# This makes it easy to deploy the application with different configurations,
+# for example with docker.
+
+PI_RADIUS_IN_KM="100" \
+    PI_LATITUDE="52.493256" \
+    PI_LONGITUDE="13.446082" \
+    PI_CUSTOMERS_FILE="./data/Customers_Martin.txt" \
+    npm start
