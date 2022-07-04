@@ -4,7 +4,7 @@ import { Customer } from '../Customer.js';
 import { CustomersFileInterface } from '../CustomersFileInterface.js';
 
 // TODO: Rename. Not a CSV file in the classical sense.
-export class CsvFile implements CustomersFileInterface {
+export class CrmExportFile implements CustomersFileInterface {
   private readonly CUSTOMER_ID_REGEX =
     /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{8}/;
   // TODO: Implement and test readCustomers.
