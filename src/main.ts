@@ -5,15 +5,22 @@ import { Distance } from './PartyInvitations/Distance.js';
 import { GreatCircleDistance } from './PartyInvitations/GreatCircleDistance/GreatCircleDistance.js';
 import { PartyInvitations } from './PartyInvitations/PartyInvitations.js';
 
+// See README.md for details on how to use this program.
+
 const ERROR_CODE_ENV_MISSING = 1;
 const ERROR_CODE_ENV_NOT_A_NUMBER = 2;
 const ERROR_CODE_CANNOT_GET_CUSTOMERS = 3;
 
-const environment = process.env;
+/** The prefix for all environment variables. */
 const environmentPrefix = 'PI_';
 
-// TODO: Test this? Can logic be extracted?
-
+/**
+ * Reads a value of an environment variable and transforms it.
+ *
+ * Exits the process if the requested variable is not set.
+ * Exits, because the program can not proceed when an environment variable is
+ * missing.
+ */
 const readFromEnvironmentOrExit = <T>({
   environmentVariable,
   transformer,
@@ -21,7 +28,7 @@ const readFromEnvironmentOrExit = <T>({
   environmentVariable: string;
   transformer: (input: string) => T;
 }): T => {
-  const envValue = environment[`${environmentPrefix}${environmentVariable}`];
+  const envValue = process.env[`${environmentPrefix}${environmentVariable}`];
   if (envValue === undefined) {
     console.error(
       `Environment variable missing. Cannot continue. Missing variable: ${environmentVariable}`,
@@ -32,6 +39,13 @@ const readFromEnvironmentOrExit = <T>({
   return transformer(envValue);
 };
 
+/**
+ * Returns a parsed number from a string.
+ *
+ * Exits the process if the parsed result is "Not a Number".
+ * Exits, because the program can not proceed when an environment variable is
+ * missing.
+ */
 const transformNumber = (input: string): number => {
   const parsed = Number.parseFloat(input);
 
@@ -45,34 +59,20 @@ const transformNumber = (input: string): number => {
   return parsed;
 };
 
+/** Prints the warnings, then the IDs of the customers within the radius. */
 const printCustomerIdsAndWarningsToStdOut = async ({
-  partyInvitations,
+  invitedCustomers,
+  customerWarnings,
+  radius,
   latitude,
   longitude,
-  radius,
-  customersFilePath,
 }: {
-  partyInvitations: PartyInvitations;
+  invitedCustomers: Customer[];
+  customerWarnings: string[];
+  radius: Distance;
   latitude: number;
   longitude: number;
-  radius: Distance;
-  customersFilePath: string;
 }) => {
-  let invitedCustomers: Customer[];
-  let customerWarnings: string[];
-  try {
-    const invitationResults = await partyInvitations.invitedCustomersOrThrow({
-      position: { latitude, longitude },
-      radius,
-      customersFilePath,
-    });
-    invitedCustomers = invitationResults.customers;
-    customerWarnings = invitationResults.warnings;
-  } catch (error) {
-    console.error('Cannot get customers. Aborting.', error.toString());
-    process.exit(ERROR_CODE_CANNOT_GET_CUSTOMERS);
-  }
-
   console.warn(
     'The following warnings were encountered while processing the data:',
   );
@@ -96,6 +96,7 @@ const printCustomerIdsAndWarningsToStdOut = async ({
   });
 };
 
+/** Main reads the environment/config, runs the program, and prints the result. */
 const main = async () => {
   const radius: Distance = readFromEnvironmentOrExit({
     environmentVariable: 'RADIUS_IN_KM',
@@ -125,12 +126,27 @@ const main = async () => {
     customersProvider,
   });
 
+  let invitedCustomers: Customer[];
+  let customerWarnings: string[];
+  try {
+    const invitationResults = await partyInvitations.invitedCustomersOrThrow({
+      position: { latitude, longitude },
+      radius,
+      customersFilePath,
+    });
+    invitedCustomers = invitationResults.customers;
+    customerWarnings = invitationResults.warnings;
+  } catch (error) {
+    console.error('Cannot get customers. Aborting.', error.toString());
+    process.exit(ERROR_CODE_CANNOT_GET_CUSTOMERS);
+  }
+
   await printCustomerIdsAndWarningsToStdOut({
-    partyInvitations,
+    invitedCustomers,
+    customerWarnings,
+    radius,
     latitude,
     longitude,
-    radius,
-    customersFilePath,
   });
 
   process.exit(0);

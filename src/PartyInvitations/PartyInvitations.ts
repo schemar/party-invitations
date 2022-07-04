@@ -4,9 +4,13 @@ import { Distance } from './Distance.js';
 import { GreatCircleDistanceInterface } from './GreatCircleDistanceInterface.js';
 import { Position } from './Position.js';
 
-// TODO: Documentation
+/**
+ * PartyInvitations finds customers within a given radius.
+ */
 export class PartyInvitations {
+  /** Used to calculate the distance between the party location and each customer. */
   private readonly greatCircleDistance: GreatCircleDistanceInterface;
+  /** Used to retrieve customers from a source. */
   private readonly customersProvider: CustomersProviderInterface;
 
   constructor({
@@ -20,7 +24,12 @@ export class PartyInvitations {
     this.customersProvider = customersProvider;
   }
 
-  // TODO: Test and implement invitedCustomers();
+  /**
+   * Returns all customers that have their offices within `radius` around `position`.
+   *
+   * Also returns warnings for malformed data and/or customers.
+   * The customers come from the provider of this instance.
+   */
   public async invitedCustomersOrThrow({
     position,
     radius,
@@ -33,13 +42,16 @@ export class PartyInvitations {
     let customers: Customer[];
     let warnings: string[];
     try {
-      const readResults = await this.customersProvider.readCustomersOrThrow({
-        fileIdentifier: customersFilePath,
-      });
-      customers = readResults.customers;
-      warnings = readResults.warnings;
+      const providerResponse =
+        await this.customersProvider.readCustomersOrThrow({
+          fileIdentifier: customersFilePath,
+        });
+      customers = providerResponse.customers;
+      warnings = providerResponse.warnings;
     } catch (error) {
-      throw new Error(`Cannot get customers from file. ${error.toString()}`);
+      throw new Error(
+        `Cannot get customers from provider. ${error.toString()}`,
+      );
     }
 
     customers = customers.filter((customer: Customer) => {
@@ -50,6 +62,8 @@ export class PartyInvitations {
       return distance.lessThan(radius);
     });
 
+    // Simply forward the warnings from the provider.
+    // The caller can act on them if they want to.
     return { customers, warnings };
   }
 }
