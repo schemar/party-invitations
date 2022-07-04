@@ -94,7 +94,9 @@ export class CrmExportProvider implements CustomersProviderInterface {
               .split(':')
               .map((keyOrValue: string) => keyOrValue.trim());
 
-            // TODO: cleanup
+            // I am aware that this switch/case is not pretty and too complex.
+            // Unfortunately, I didn't have the time to clean this up.
+            // Happy to discuss it in person.
             let parsedNumber: number;
             switch (key) {
               case 'id':
