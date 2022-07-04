@@ -1,6 +1,9 @@
-// TODO: Test
 /**
  * Distance records the distance between two points.
+ *
+ * Note that this initial version only supports kilometers.
+ * It is trivial to expand this class to support other units,
+ * for example miles.
  */
 export class Distance {
   /**
